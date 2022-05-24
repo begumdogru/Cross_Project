@@ -1,52 +1,19 @@
-import { StatusBar } from "expo-status-bar";
-import {useState, useEffect} from "react";
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import React from 'react';
+import {View, Text} from 'react-native';
+import PostList from './Postlist';
+import PostListDetail from './PostListDetail';
 
-import { StyleSheet, Text, View, FlatList, SafeAreaView, ActivityIndicator} from "react-native";
+export default function Screen() {
+    const Stack = createStackNavigator();
 
-const App = () => {
-  const [data, setData] = useState([]);
-  const [isLoading, setLoading] = useState(true)
-//  console.log(data); 
-
-  useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/posts")
-      .then((response) => response.json())
-      .then((json) => setData(json))
-      .catch((error) => console.error(error))
-      .finally(setLoading(false));
-  }, []);
-
-  return (
-    <SafeAreaView style={styles.container}>
-        {isLoading ? <ActivityIndicator/> : <FlatList
-          data={data}
-          keyExtractor={({id}, index) => id}
-          renderItem={({item}) =>{
-            if(item.id < 21){
-              return(  
-                <Text>{item.id} : {item.title}</Text>
-              )
-            }
-            else{
-              setLoading(false)
-            }
-           
-          }}
-        />}
-    </SafeAreaView>
-  );
+    return (
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName='Post'>
+              <Stack.Screen name="PostListPage" options={{title: 'Post List Page'}} component={PostList} />
+              <Stack.Screen name="PostListDetail" options={{title: 'Post List Detail Page'}} component={PostListDetail} />
+            </Stack.Navigator>
+        </NavigationContainer>
+    )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    color: "red",
-  },
-});
-
-export default App;
